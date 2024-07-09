@@ -1,7 +1,28 @@
-package k6ext2
+package ext2
 
-import "fmt"
+import (
+	"fmt"
 
-func K6ext2() {
-	fmt.Println("k6-ext2 ext2")
+	"go.k6.io/k6/js/modules"
+)
+
+// init is called by the Go runtime at application startup.
+func init() {
+	modules.Register("k6/x/compare", new(Ext2))
+}
+
+// Compare is the type for our custom API.
+type Ext2 struct {
+	ComparisonResult string // textual description of the most recent comparison
+}
+
+// IsGreater returns true if a is greater than b, or false otherwise, setting textual result message.
+func (c *Ext2) IsGreater(a, b int) bool {
+	if a > b {
+		c.ComparisonResult = fmt.Sprintf("%d is greater than %d", a, b)
+		return true
+	} else {
+		c.ComparisonResult = fmt.Sprintf("%d is NOT greater than %d", a, b)
+		return false
+	}
 }
